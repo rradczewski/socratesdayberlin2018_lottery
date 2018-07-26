@@ -1,36 +1,20 @@
 const draw = require("./draw");
-
-const drawAndPartition = (applicants, n, random) => {
-  const drawnApplicants = draw(applicants, n, random);
-
-  return [
-    drawnApplicants,
-    applicants.filter(elem => !drawnApplicants.includes(elem))
-  ];
-};
+const R = require("ramda");
 
 module.exports = (applicants, pools, random) => {
   // first draw from the default pool;
-  const [drawnDefault, leftDefault] = drawAndPartition(
-    applicants,
-    pools.default,
-    random
-  );
+  const drawnDefault = draw(applicants, pools.default, random);
 
   let allDrawn = [...drawnDefault];
-  let currentLeft = leftDefault;
+  let allLeft = R.without(allDrawn, applicants);
+
   // Go through the other pools
   for (const pool in pools) {
     if (pool === "default") continue;
+    const qualifiedApplicants = allLeft.filter(applicant => applicant[pool]);
+    const drawnExtra = draw(qualifiedApplicants, pools[pool], random);
 
-    const qualifiedApplicants = applicants.filter(applicant => applicant[pool]);
-
-    const [drawnExtra, rest] = drawAndPartition(
-      qualifiedApplicants,
-      pools[pool],
-      random
-    );
-    currentLeft = rest;
+    allLeft = R.without(drawnExtra, allLeft);
     allDrawn = allDrawn.concat(drawnExtra);
   }
 
