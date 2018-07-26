@@ -2,11 +2,8 @@ const draw = require("./draw");
 const R = require("ramda");
 
 module.exports = (applicants, pools, random) => {
-  // first draw from the default pool;
-  const drawnDefault = draw(applicants, pools.default, random);
-
-  let allDrawn = [...drawnDefault];
-  let allLeft = R.without(allDrawn, applicants);
+  let allDrawn = [];
+  let allLeft = applicants;
 
   // Go through the other pools
   for (const pool in pools) {
@@ -18,5 +15,10 @@ module.exports = (applicants, pools, random) => {
     allDrawn = allDrawn.concat(drawnExtra);
   }
 
-  return allDrawn;
+  // first draw from the default pool;
+  const drawnDefault = draw(allLeft, pools.default, random);
+
+
+
+  return allDrawn.concat(drawnDefault);
 };
