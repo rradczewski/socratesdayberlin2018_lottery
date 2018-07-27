@@ -24,11 +24,23 @@ const applicants = parseCsv(fs.readFileSync(FILE).toString(), {
   columns: true
 }).map(rowToApplicant);
 
-const pools = { default: 35, diversity: 10, journey: 5 };
+// Check for duplicates
+if(R.uniqBy(R.prop('id'), applicants).length !== applicants.length) {
+  throw new Error("Duplicate applicant found!");
+}
 
-statistics((random) => lottery(applicants, pools, random), 1000);
+const ticketsAvailable = { default: 35, diversity: 10, journey: 5 };
 
-const winners = lottery(applicants, pools, random);
-const loosers = R.without(winners, applicants);
-console.log('Winners', winners.map(a => JSON.stringify(a)));
-console.log('Loosers', loosers.map(a => JSON.stringify(a)));
+statistics(random => lottery(applicants, ticketsAvailable, random), 50);
+
+const winners = lottery(applicants, ticketsAvailable, random);
+const loosers = R.reject(applicant => R.any(R.propEq('id', applicant.id), winners), applicants)
+
+console.log("Winners", winners.map(a => JSON.stringify(a)));
+console.log("Loosers", loosers.map(a => JSON.stringify(a)));
+
+const ticketsSpent = R.map(R.length, R.groupBy(R.prop("won_through"), winners));
+const ticketsLeft = R.mergeWith(R.subtract, ticketsAvailable, ticketsSpent)
+
+console.log('Tickets spent', ticketsSpent);
+console.log('Tickets left', ticketsLeft);
