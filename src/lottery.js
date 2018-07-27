@@ -18,7 +18,5 @@ module.exports = (applicants, pools, random) => {
   // first draw from the default pool;
   const drawnDefault = draw(allLeft, pools.default, random);
 
-
-
   return allDrawn.concat(drawnDefault);
 };

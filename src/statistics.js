@@ -1,7 +1,7 @@
 const randomSeed = require("random-seed");
 const R = require("ramda");
 
-const groupForApplicant = ({ id, diversity, journey }) =>
+const groupForApplicant = ({ diversity, journey }) =>
   `R${diversity ? "D" : ""}${journey ? "J" : ""}`;
 
 module.exports = (fn, n = 10000) => {
@@ -12,7 +12,8 @@ module.exports = (fn, n = 10000) => {
   for (let i = 0; i < n; i++) {
     const drawnElems = fn(random);
     for (let drawnElem of drawnElems) {
-      found[drawnElem.id] = (found[drawnElem.id] || 0) + 1;
+      const group = `${groupForApplicant(drawnElem)}_${drawnElem.id}`
+      found[group] = (found[group] || 0) + 1;
     }
   }
 
