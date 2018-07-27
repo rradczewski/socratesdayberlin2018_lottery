@@ -36,10 +36,10 @@ const ticketsAvailable = { default: 35, diversity: 10, journey: 5 };
 statistics(random => lottery(applicants, ticketsAvailable, random), 50);
 
 const winners = lottery(applicants, ticketsAvailable, random);
-const loosers = R.reject(applicant => R.any(R.propEq('id', applicant.id), winners), applicants)
+const not_winners = R.reject(applicant => R.any(R.propEq('id', applicant.id), winners), applicants)
 
 console.log("Winners", winners.map(a => JSON.stringify(a)));
-console.log("Loosers", loosers.map(a => JSON.stringify(a)));
+console.log("Not Winners", not_winners.map(a => JSON.stringify(a)));
 
 const ticketsSpent = R.map(R.length, R.groupBy(R.prop("won_through"), winners));
 const ticketsLeft = R.mergeWith(R.subtract, ticketsAvailable, ticketsSpent)
