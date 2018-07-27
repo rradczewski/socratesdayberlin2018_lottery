@@ -19,7 +19,9 @@ const rowToApplicant = row => ({
     row.Ticket === "Journeyperson & Diversity Ticket (free with deposit)"
 });
 
-const random = randomSeed();
+const seed = (process.argv[3] && Number(process.argv[3])) || Math.random();
+console.log('Seed is', seed);
+const random = randomSeed(seed);
 const applicants = parseCsv(fs.readFileSync(FILE).toString(), {
   columns: true
 }).map(rowToApplicant);
