@@ -12,11 +12,13 @@ module.exports = (applicants, pools, random) => {
     const drawnExtra = draw(qualifiedApplicants, pools[pool], random);
 
     allLeft = R.without(drawnExtra, allLeft);
-    allDrawn = allDrawn.concat(drawnExtra);
+    allDrawn = allDrawn.concat(R.map(R.assoc("won_through", pool), drawnExtra));
   }
 
   // first draw from the default pool;
-  const drawnDefault = draw(allLeft, pools.default, random);
+  const drawnDefault = draw(allLeft, pools.default, random).map(
+    R.assoc("won_through", "default")
+  );
 
   return allDrawn.concat(drawnDefault);
 };
