@@ -26,4 +26,5 @@ module.exports = (fn, n = 10000) => {
   );
 
   console.log(`Ran ${n} simulations:`, "\n", groupsSum);
+  return groupsSum;
 };

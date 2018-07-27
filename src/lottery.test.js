@@ -20,5 +20,12 @@ it("should give someone with a diversity |/& journey ticket a higher chance", ()
 
   const drawLottery = random => lottery(applicants, pools, random);
 
-  statistics(drawLottery, 1000);
+  const result = statistics(drawLottery, 1000);
+
+  expect(result.RD).toBeGreaterThan(result.R);
+  expect(result.RJ).toBeGreaterThan(result.R);
+  expect(result.RD).toBeGreaterThan(result.RJ);
+
+  expect(result.RDJ).toBeGreaterThan(result.RD);
+  expect(result.RDJ).toBeGreaterThan(result.RJ);
 });
