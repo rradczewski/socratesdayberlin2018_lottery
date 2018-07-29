@@ -9,7 +9,14 @@ const statistics = require("./statistics");
 
 const FILE = process.argv[2];
 const SEED = (process.argv[3] && Number(process.argv[3])) || Math.random();
+const SALT_SEED = (process.argv[4] && Number(process.argv[4])) || Math.random();
 const MASK_MAILS = process.env.MASK_MAILS === "1";
+
+console.log("SEED", SEED);
+const random = randomSeed(SEED);
+
+console.log("SALT_SEED", SALT_SEED);
+const salt_random = randomSeed(SALT_SEED);
 
 const maybeMaskMail = applicant =>
   !MASK_MAILS
@@ -17,7 +24,13 @@ const maybeMaskMail = applicant =>
     : {
         ...applicant,
         id: crypto
-          .pbkdf2Sync(applicant.id, "socratesdayber2018", 1000, 32, "sha512")
+          .pbkdf2Sync(
+            applicant.id,
+            `socratesdayber2018_${salt_random.random()}`,
+            1000,
+            32,
+            "sha512"
+          )
           .toString("hex")
       };
 
@@ -33,9 +46,6 @@ const rowToApplicant = row => {
       row.Ticket === "Journeyperson & Diversity Ticket (free with deposit)"
   };
 };
-
-console.log("Seed is", SEED);
-const random = randomSeed(SEED);
 
 const applicants = R.pipe(
   file => fs.readFileSync(file).toString(),
