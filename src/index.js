@@ -31,7 +31,7 @@ if(R.uniqBy(R.prop('id'), applicants).length !== applicants.length) {
   throw new Error("Duplicate applicant found!");
 }
 
-const ticketsAvailable = { default: 35, diversity: 10, journey: 5 };
+const ticketsAvailable = { default: 30, diversity: 10, journey: 5 };
 
 statistics(random => lottery(applicants, ticketsAvailable, random), 50);
 
